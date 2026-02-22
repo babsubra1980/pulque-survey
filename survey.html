@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maya Pulque RTD (Ready To Drink) Concept Testing Survey</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #f8f4f0 0%, #e8e0d8 100%);
+            min-height: 100vh;
+            color: #2d2a26;
+        }
+        .survey-container {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 24px 20px 60px;
+        }
+        .survey-header {
+            text-align: center;
+            padding: 40px 20px 30px;
+        }
+        .survey-header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+        .survey-header p {
+            font-size: 0.95rem;
+            color: #666;
+            line-height: 1.5;
+        }
+        .progress-bar-container {
+            background: #ddd;
+            border-radius: 20px;
+            height: 8px;
+            margin: 20px 0 30px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            background: linear-gradient(90deg, #c45e2c, #e07a3a);
+            height: 100%;
+            border-radius: 20px;
+            transition: width 0.4s ease;
+            width: 0%;
+        }
+        .section {
+            display: none;
+            animation: fadeIn 0.35s ease;
+        }
+        .section.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .question-card {
+            background: #fff;
+            border-radius: 14px;
+            padding: 28px 28px 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+        .question-card h2 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #1a1a1a;
+        }
+        .question-card .q-subtitle {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 16px;
+        }
+        .question-card p.q-text {
+            font-size: 0.98rem;
+            line-height: 1.55;
+            margin-bottom: 18px;
+            color: #333;
+        }
+        .option-list { list-style: none; }
+        .option-list li {
+            margin-bottom: 10px;
+        }
+        .option-list label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border: 2px solid #e8e4e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
+        }
+        .option-list label:hover {
+            border-color: #c45e2c;
+            background: #fdf8f5;
+        }
+        .option-list input[type="radio"],
+        .option-list input[type="checkbox"] {
+            accent-color: #c45e2c;
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+        .option-list input:checked + span { font-weight: 600; }
+        .concept-box {
+            background: linear-gradient(135deg, #fdf6f0, #f5ede5);
+            border-left: 4px solid #c45e2c;
+            border-radius: 10px;
+            padding: 24px 24px;
+            margin-bottom: 20px;
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+        .concept-box h3 {
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            color: #c45e2c;
+        }
+        .concept-box ul {
+            margin: 10px 0 0 18px;
+        }
+        .concept-box ul li { margin-bottom: 4px; }
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            border: 2px solid #e8e4e0;
+            border-radius: 10px;
+            padding: 14px 16px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            resize: vertical;
+            transition: border-color 0.2s;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #c45e2c;
+        }
+        .btn-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 24px;
+            gap: 12px;
+        }
+        .btn {
+            padding: 12px 32px;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-next {
+            background: linear-gradient(135deg, #c45e2c, #d4713e);
+            color: #fff;
+            margin-left: auto;
+        }
+        .btn-next:hover { background: linear-gradient(135deg, #a94e24, #c45e2c); }
+        .btn-back {
+            background: #f0ece8;
+            color: #555;
+        }
+        .btn-back:hover { background: #e4ddd6; }
+        .btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .error-msg {
+            color: #c0392b;
+            font-size: 0.85rem;
+            margin-top: 8px;
+            display: none;
+        }
+        .terminated-screen, .thank-you-screen {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .terminated-screen h2, .thank-you-screen h2 {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+        }
+        .terminated-screen p, .thank-you-screen p {
+            color: #666;
+            line-height: 1.6;
+        }
+        .thank-you-screen .btn {
+            margin-top: 24px;
+        }
+        .section-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #c45e2c;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        @media (max-width: 600px) {
+            .survey-container { padding: 16px 12px 40px; }
+            .question-card { padding: 20px 18px; }
+            .survey-header h1 { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="survey-container">
+    <div class="survey-header">
+        <h1>Maya Pulque RTD(Ready-To-Drink) Survey</h1>
+        <p>Help us understand your interest in a new canned cocktail. Takes about 3–5 minutes.</p>
+    </div>
+    <div class="progress-bar-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- ========== SECTION 0: Q1 Age ========== -->
+    <div class="section active" id="section-0">
+        <div class="section-label">Screener</div>
+        <div class="question-card">
+            <h2>Q1. What is your age?</h2>
+            <p class="q-subtitle">Select one</p>
+            <ul class="option-list">
+                <li><label><input type="radio" name="q1" value="Under 21"><span>Under 21</span></label></li>
+                <li><label><input type="radio" name="q1" value="21-24"><span>21–24</span></label></li>
+                <li><label><input type="radio" name="q1" value="25-34"><span>25–34</span></label></li>
+                <li><label><input type="radio" name="q1" value="35-44"><span>35–44</span></label></li>
+                <li><label><input type="radio" name="q1" value="45-54"><span>45–54</span></label></li>
+                <li><label><input type="radio" name="q1" value="55+"><span>55+</span></label></li>
+            </ul>
+            <p class="error-msg" id="err-0">Please select an option to continue.</p>
+        </div>
+        <div class="btn-row">
+            <button class="btn btn-next" onclick="nextSection(0)">Next →</button>
+        </div>
+    </div>
+
+    <!-- ========== TERMINATED ========== -->
+    <div class="section" id="section-terminated">
+        <div class="terminated-screen">
+            <h2>Thank you for your interest!</h2>
+            <p>Unfortunately, you must be 21 or older to participate in this survey.<br>We appreciate your time.</p>
+        </div>
+    </div>
+
+    <!-- ========== SECTION 1: Q2 Location ========== -->
+    <div class="section" id="section-1">
+        <div class="section-label">Screener</div>
+        <div class="question-card">
+            <h2>Q2. Where do you live?</h2>
+            <p class="q-subtitle">Select one</p>
+            <ul class="option-list">
+                <li><label><input type="radio" name="q2" value="Austin metro"><span>In the Austin metro area</span></label></li>
+                <li><label><input type="radio" name="q2" value="Texas non-Austin"><span>In Texas, but not Austin metro</span></label></li>
+                <li><label><input type="radio" name="q2" value="Outside Texas"><span>Outside Texas</span></label></li>
+            </ul>
+            <p class="error-msg" id="err-1">Please select an option to continue.</p>
+        </div>
+        <div class="btn-row">
+            <button class="btn btn-back" onclick="prevSection(1)">← Back</button>
+            <button class="btn btn-next" onclick="nextSection(1)">Next →</button>
+        </div>
+    </div>
+
+    <!-- ========== SECTION 2: Q3 RTD Frequency ========== -->
+    <div class="section" id="section-2">
+        <div class="section-label">Screener</div>
+        <div class="question-card">
+            <h2>Q3. In the past 3 months, how often have you had ready‑to‑drink (RTD) beverages such as canned cocktails, hard seltzers, or premixed drinks?</h2>
+            <p class="q-subtitle">Select one</p>
+            <ul class="option-list">
+                <li><label><input type="radio" name="q3" value="Never"><span>Never</span></label></li>
+                <li><label><input type="radio" name="q3" value="Less than once a month"><span>Less than once a month</span></label></li>
+                <li><label><input type="radio" name="q3" value="About once a month"><span>About once a month</span></label></li>
+                <li><label><input type="radio" name="q3" value="2-3 times a month"><span>2–3 times a month</span></label></li>
+                <li><label><input type="radio" name="q3" value="About once a week"><span>About once a week</span></label></li>
+                <li><label><input type="radio" name="q3" value="Several times a week"><span>Several times a week</span></label></li>
+            </ul>
+            <p class="error-msg" id="err-2">Please select an option to continue.</p>
+        </div>
+        <div class="btn-row">
+            <button class="btn btn-back" onclick="prevSection(2)">← Back</button>
+            <button class="btn btn-next" onclick="nextSection(2)">Next →</button>
+        </div>
+    </div>
+
+    <!-- ========== SECTION 3: Q4 Drink Types ========== -->
+    <div class="section" id="section-3">
+        <div class="section-label">Screener</div>
+        <div class="question-card">
+            <h2>Q4. Which types of alcoholic drinks do you drink at least once a month?</h2>
+            <p class="q-subtitle">Select all that apply</p>
+            <ul class="option-list">
+                <li><label><input type="checkbox" name="q4" value="Beer"><span>Beer</span></label></li>
+                <li><label><input type="checkbox" name="q4" value="Wine"><span>Wine</span></label></li>
+                <li><label><input type="checkbox" name="q4" value="Spirits"><span>Spirits (tequila, vodka, whiskey, etc.)</span></label></li>
+                <li><label><input type="checkbox" name="q4" value="RTD canned cocktails"><span>RTD canned cocktails</span></label></li>
+                <li><label><input type="checkbox" name="q4" value="Hard seltzers"><span>Hard seltzers</span></label></li>
+                <li><label><input type="checkbox" name="q4" value="None monthly" id="q4-none"><span>I do not drink alcohol at least once a month</span></label></li>
+            </ul>
+            <p class="error-msg" id="err-3">Please select at least one option.</p>
+        </div>
+        <div class="btn-row">
+            <button class="btn btn-back" onclick="prevSection(3)">← Back</button>
+            <button class="btn btn-next" onclick="nextSection(3)">Next →</button>
+        </div>
+    </div>
+
+    <!-- ========== SECTION 4: Q5 Pulque Awareness ========== -->
+    <div class="section" id="section-4">
+        <div class="section-label">Screener</div>
+        <div class="question-card">
+            <h2>Q5. Have you ever heard of "pulque"?</h2>
+            <p class="q-subtitle">Optional — Select one</p>
+            <ul class="option-list">
+                <li><label><input type="radio" name="q5" value="Tried it"><span>Yes, and I have tried it</span></label></li>
+                <li><label><input type="radio" name="q5" value="Heard not tried"><span>Yes, but I have never tried it</span></label></li>
+                <li><label><input type="radio" name="q5" value="Never heard"><span>No, I have not heard of pulque</span></label></li>
+            </ul>
+        </div>
+        <div class="btn-row">
+            <button class="btn btn-back" onclick="prevSection(4)">← Back</button>
+            <button class="btn btn-next" onclick="nextSection(4)">Next →</button>
+        </div>
+    </div>
+
+    <!-- ========== SECTION 5: Concept Exposure ========== -->
+    <div class="section" id="section-5">
+        <div class="section-label">Concept</div>
+        <div class="concept-box">
+            <h3>Please read the following product description carefully:</h3>
+            <p><strong>Pulque</strong> is a traditional Mexican drink made from the naturally fermented sap of the agave plant.</p>
+            <p style="margin-top:10px"><strong>MAYA PULQUE</strong> is a new canned ready‑to‑drink pulque cocktail launched in Austin.</p>
+            <ul>
+                <li>Lightly sparkling, 5% ABV</li>
+                <li>Flavor: Original | Guava | Limón | Pineapple-Jalapeño</li>
+                <li>Made with real agave fermentation (no hard seltzer base)</li>
+                <li>Naturally flavored, gluten‑free</li>
+                <li>Sold in 12 oz cans, in 4‑packs</li>
+            </ul>
+        </div>
+        <div class="btn-row">
+            <button class="btn btn-back" onclick="prevSection(5)">← Back</button>
+            <button class="btn btn-next" onclick="nextSection(5)">I've read it — Continue →</button>
+        </div>
+    </div>
+
+    <!-- ========== SECTION 6: Q6 Appeal ========== -->
+    <div class="section" id="section-6">
+        <div class="section-label">Core Diagnostics</div>
+        <div class="question-card">
+            <h2>Q6. Overall, how appealing is this product to you?</h2>
+            <p class="q-subtitle">Select one</p>
+            <ul class="option-list">
+                <li><label><input type="radio" name="q6" value="Extremely appealing"><span>Extremely appealing</span></label></li>
+                <li><label><input type="radio" name="q6" value="Very appealing"><span>Very appealing</span></label></li>
+                <li><label><input type="radio" name="q6" value="Somewhat appealing"><span>Somewhat appealing</span></label></li>
+                <li><label><input type="radio" name="q6" value="Not very appealing"><span>Not very appealing</span></label></li>
+                <li><label><input type="radio" name="q6" value="Not at all appealing"><span>Not at all appealing</span></label></li>
+            </ul>
+            <p class="error-msg" id="err-6">Please select an option to continue.</p>
+        </div>
+        <div class="btn-row">
+            <button class="btn btn-back" onclick="prevSection(6)">← Back</button>
+            <button class="btn btn-next" onclick="nextSection(6)">Next →</button>
+        </div>
+    </div>
+
+    <!-- ========== SECTION 7: Q7 Uniqueness ========== -->
+    <div class="section" id="section-7">
+        <div class="section-label">Core Diagnostics</div>
+        <div class="question-card">
+            <h2>Q7. How unique does this product feel compared to other canned cocktails or RTDs you've seen?</h2>
+            <p class="q-subtitle">Select one</p>
+            <ul class="option-list">
+                <li><label><input type="radio" name="q7" value="Extremely unique"><span>Extremely unique</span></label></li>
+                <li><label><input type="radio" name="q7" value="Very unique"><span>Very unique</span></label></li>
+                <li><label><input type="radio" name="q7" value="Somewhat unique"><span>Somewhat unique</span></label></li>
+                <li><label><input type="radio" name="q7" value="Not very unique"><span>Not very unique</span></label></li>
+                <li><label><input type="radio" name="q7" value="Not at all unique"><span>Not at all unique</span></label></li>
+            </ul>
+            <p class="error-msg" id="err-7">Please select an option to continue.</p>
+        </div>
+        <div class="btn-row">
+            <button class="btn btn-back" onclick="prevSection(7)">← Back</button>
+            <button class="btn btn-next" onclick="nextSection(7)">Next →</button>
+        </div>
+    </div>
+
+    <!-- ========== SECTION 8: Q8 Purchase Intent ========== -->
+    <div class="section" id="section-8">
+        <div class="section-label">Core Diagnostics</div>
+        <div class="question-card">
+            <h2>Q8. If this product were available near you, how likely would you be to purchase it in the next month?</h2>
+            <p class="q-subtitle">Select one</p>
+            <ul class="option-list">
+                <li><label><input type="radio" name="q8" value="Definitely would buy"><span>Definitely would buy</span></label></li>
+                <li><label><input type="radio" name="q8" value="Probably would buy"><span>Probably would buy</span></label></li>
+                <li><label><input type="radio" name="q8" value="Might or might not buy"><span>Might or might not buy</span></label></li>
+                <li><label><input type="radio" name="q8" value="Probably would not buy"><span>Probably would not buy</span></label></li>
+                <li><label><input type="radio" name="q8" value="Definitely would not buy"><span>Definitely would not buy</span></label></li>
+            </ul>
+            <p class="error-msg" id="err-8">Please select an option to continue.</p>
+        </div>
+        <div class="btn-row">
+            <button class="btn btn-back" onclick="prevSection(8)">← Back</button>
+            <button class="btn btn-next" onclick="nextSection(8)">Next →</button>
+        </div>
+    </div>
+
+    <!-- ========== SECTION 9: Q9 Price ========== -->
+    <div class="section" id="section-9">
+        <div class="section-label">Core Diagnostics</div>
+        <div class="question-card">
+            <h2>Q9. Imagine this product is priced at about $12.99 for a 4‑pack of 12 oz cans. How do you feel about this price?</h2>
+            <p class="q-subtitle">Select one</p>
+            <ul class="option-list">
+                <li><label><input type="radio" name="q9" value="Great value"><span>A great value – I would definitely consider buying</span></label></li>
+                <li><label><input type="radio" name="q9" value="Acceptable"><span>Acceptable – I might consider buying</span></label></li>
+                <li><label><input type="radio" name="q9" value="Expensive"><span>Expensive – I would need a good reason to buy</span></label></li>
+                <li><label><input type="radio" name="q9" value="Much too expensive"><span>Much too expensive – I would not buy at this price</span></label></li>
+            </ul>
+            <p class="error-msg" id="err-9">Please select an option to continue.</p>
+        </div>
+        <div class="btn-row">
+            <button class="btn btn-back" onclick="prevSection(9)">← Back</button>
+            <button class="btn btn-next" onclick="nextSection(9)">Next →</button>
+        </div>
+    </div>
+
+    <!-- ========== SECTION 10: Q10 Occasions ========== -->
+    <div class="section" id="section-10">
+        <div class="section-label">Occasion &amp; Fit</div>
+        <div class="question-card">
+            <h2>Q10. In which of these situations could you see yourself drinking this pulque canned cocktail?</h2>
+            <p class="q-subtitle">Select all that apply</p>
+            <ul class="option-list">
+                <li><label><input type="checkbox" name="q10" value="Hanging out at home"><span>Hanging out at home</span></label></li>
+                <li><label><input type="checkbox" name="q10" value="With Mexican or Latin food"><span>With Mexican or Latin food</span></label></li>
+                <li><label><input type="checkbox" name="q10" value="At bars or restaurants"><span>At bars or restaurants</span></label></li>
+                <li><label><input type="checkbox" name="q10" value="At music festivals or live events"><span>At music festivals or live events</span></label></li>
+                <li><label><input type="checkbox" name="q10" value="At backyard parties / BBQs"><span>At backyard parties / BBQs</span></label></li>
+                <li><label><input type="checkbox" name="q10" value="At the lake / river / outdoor activities"><span>At the lake / river / outdoor activities</span></label></li>
+                <li><label><input type="checkbox" name="q10" value="Would not drink this" id="q10-none"><span>I don't see myself drinking this</span></label></li>
+            </ul>
+            <p class="error-msg" id="err-10">Please select at least one option.</p>
+        </div>
+        <div class="btn-row">
+            <button class="btn btn-back" onclick="prevSection(10)">← Back</button>
+            <button class="btn btn-next" onclick="nextSection(10)">Next →</button>
+        </div>
+    </div>
+
+    <!-- ========== SECTION 11: Q11 Comparison ========== -->
+    <div class="section" id="section-11">
+        <div class="section-label">Occasion &amp; Fit</div>
+        <div class="question-card">
+            <h2>Q11. Compared to the RTD drinks you currently buy, would you say this product is…</h2>
+            <p class="q-subtitle">Select one</p>
+            <ul class="option-list">
+                <li><label><input type="radio" name="q11" value="Much better"><span>Much better</span></label></li>
+                <li><label><input type="radio" name="q11" value="A little better"><span>A little better</span></label></li>
+                <li><label><input type="radio" name="q11" value="About the same"><span>About the same</span></label></li>
+                <li><label><input type="radio" name="q11" value="A little worse"><span>A little worse</span></label></li>
+                <li><label><input type="radio" name="q11" value="Much worse"><span>Much worse</span></label></li>
+            </ul>
+            <p class="error-msg" id="err-11">Please select an option to continue.</p>
+        </div>
+        <div class="btn-row">
+            <button class="btn btn-back" onclick="prevSection(11)">← Back</button>
+            <button class="btn btn-next" onclick="nextSection(11)">Next →</button>
+        </div>
+    </div>
+
+    <!-- ========== SECTION 12: Q12 Identity Fit ========== -->
+    <div class="section" id="section-12">
+        <div class="section-label">Occasion &amp; Fit</div>
+        <div class="question-card">
+            <h2>Q12. How well does this product fit with how you like to present yourself (your identity, culture, and tastes)?</h2>
+            <p class="q-subtitle">Select one</p>
+            <ul class="option-list">
+                <li><label><input type="radio" name="q12" value="Extremely well"><span>Extremely well</span></label></li>
+                <li><label><input type="radio" name="q12" value="Very well"><span>Very well</span></label></li>
+                <li><label><input type="radio" name="q12" value="Somewhat well"><span>Somewhat well</span></label></li>
+                <li><label><input type="radio" name="q12" value="Not very well"><span>Not very well</span></label></li>
+                <li><label><input type="radio" name="q12" value="Not at all"><span>Not at all</span></label></li>
+            </ul>
+            <p class="error-msg" id="err-12">Please select an option to continue.</p>
+        </div>
+        <div class="btn-row">
+            <button class="btn btn-back" onclick="prevSection(12)">← Back</button>
+            <button class="btn btn-next" onclick="nextSection(12)">Next →</button>
+        </div>
+    </div>
+
+    <!-- ========== SECTION 13: Q13-Q15 Open-Ended ========== -->
+    <div class="section" id="section-13">
+        <div class="section-label">Open-Ended Feedback</div>
+        <div class="question-card">
+            <h2>Q13. What do you like most about this product idea?</h2>
+            <textarea name="q13" id="q13" placeholder="Type your answer here..."></textarea>
+        </div>
+        <div class="question-card">
+            <h2>Q14. What, if anything, concerns you or would stop you from buying it?</h2>
+            <textarea name="q14" id="q14" placeholder="Type your answer here..."></textarea>
+        </div>
+        <div class="question-card">
+            <h2>Q15. If you could change one thing about this product (flavor, alcohol level, design, story), what would it be?</h2>
+            <textarea name="q15" id="q15" placeholder="Type your answer here..."></textarea>
+        </div>
+        <div class="btn-row">
+            <button class="btn btn-back" onclick="prevSection(13)">← Back</button>
+            <button class="btn btn-next" onclick="submitSurvey()">Submit Survey →</button>
+        </div>
+    </div>
+
+    <!-- ========== THANK YOU ========== -->
+    <div class="section" id="section-thankyou">
+        <div class="thank-you-screen">
+            <h2>Thank you for completing the survey!</h2>
+            <p>Your responses have been recorded. We truly appreciate your time and feedback.</p>
+            <button class="btn btn-next" onclick="downloadResults()">Download Responses (CSV)</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const TOTAL_SECTIONS = 14; // 0..13 (sections for questions), plus concept
+    let currentSection = 0;
+    const responses = {};
+
+    // Exclusive "none" toggles for checkbox questions
+    document.addEventListener('DOMContentLoaded', () => {
+        setupExclusiveNone('q4', 'q4-none');
+        setupExclusiveNone('q10', 'q10-none');
+    });
+
+    function setupExclusiveNone(name, noneId) {
+        const noneEl = document.getElementById(noneId);
+        const allCbs = document.querySelectorAll(`input[name="${name}"]`);
+        allCbs.forEach(cb => {
+            cb.addEventListener('change', () => {
+                if (cb.id === noneId && cb.checked) {
+                    allCbs.forEach(o => { if (o !== cb) o.checked = false; });
+                } else if (cb.checked) {
+                    noneEl.checked = false;
+                }
+            });
+        });
+    }
+
+    function getRadioValue(name) {
+        const el = document.querySelector(`input[name="${name}"]:checked`);
+        return el ? el.value : null;
+    }
+
+    function getCheckboxValues(name) {
+        return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(e => e.value);
+    }
+
+    function showError(id) {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'block';
+    }
+
+    function hideError(id) {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+    }
+
+    function goToSection(idx) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        const target = document.getElementById(`section-${idx}`);
+        if (target) target.classList.add('active');
+        updateProgress(idx);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function goToTerminated() {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById('section-terminated').classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function goToThankYou() {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById('section-thankyou').classList.add('active');
+        document.getElementById('progressBar').style.width = '100%';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function updateProgress(idx) {
+        const pct = Math.round((idx / TOTAL_SECTIONS) * 100);
+        document.getElementById('progressBar').style.width = pct + '%';
+    }
+
+    function nextSection(from) {
+        // Validate current section
+        if (!validateSection(from)) return;
+
+        // Save responses
+        saveSection(from);
+
+        // Screening logic
+        if (from === 0) {
+            const age = getRadioValue('q1');
+            if (age === 'Under 21') {
+                responses.terminated = true;
+                responses.terminateReason = 'Under 21';
+                goToTerminated();
+                return;
+            }
+        }
+
+        currentSection = from + 1;
+        goToSection(currentSection);
+    }
+
+    function prevSection(from) {
+        currentSection = from - 1;
+        goToSection(currentSection);
+    }
+
+    function validateSection(idx) {
+        hideError(`err-${idx}`);
+
+        switch (idx) {
+            case 0: // Q1
+                if (!getRadioValue('q1')) { showError('err-0'); return false; }
+                break;
+            case 1: // Q2
+                if (!getRadioValue('q2')) { showError('err-1'); return false; }
+                break;
+            case 2: // Q3
+                if (!getRadioValue('q3')) { showError('err-2'); return false; }
+                break;
+            case 3: // Q4
+                if (getCheckboxValues('q4').length === 0) { showError('err-3'); return false; }
+                break;
+            case 4: // Q5 optional
+                break;
+            case 5: // Concept - no validation
+                break;
+            case 6:
+                if (!getRadioValue('q6')) { showError('err-6'); return false; }
+                break;
+            case 7:
+                if (!getRadioValue('q7')) { showError('err-7'); return false; }
+                break;
+            case 8:
+                if (!getRadioValue('q8')) { showError('err-8'); return false; }
+                break;
+            case 9:
+                if (!getRadioValue('q9')) { showError('err-9'); return false; }
+                break;
+            case 10:
+                if (getCheckboxValues('q10').length === 0) { showError('err-10'); return false; }
+                break;
+            case 11:
+                if (!getRadioValue('q11')) { showError('err-11'); return false; }
+                break;
+            case 12:
+                if (!getRadioValue('q12')) { showError('err-12'); return false; }
+                break;
+        }
+        return true;
+    }
+
+    function saveSection(idx) {
+        switch (idx) {
+            case 0: responses.q1_age = getRadioValue('q1'); break;
+            case 1: responses.q2_location = getRadioValue('q2'); break;
+            case 2:
+                responses.q3_rtd_frequency = getRadioValue('q3');
+                const freq = responses.q3_rtd_frequency;
+                responses.q3_qualifies = !['Never', 'Less than once a month'].includes(freq);
+                break;
+            case 3: responses.q4_drink_types = getCheckboxValues('q4'); break;
+            case 4: responses.q5_pulque_awareness = getRadioValue('q5') || 'Skipped'; break;
+            case 5: break; // concept
+            case 6: responses.q6_appeal = getRadioValue('q6'); break;
+            case 7: responses.q7_uniqueness = getRadioValue('q7'); break;
+            case 8: responses.q8_purchase_intent = getRadioValue('q8'); break;
+            case 9: responses.q9_price = getRadioValue('q9'); break;
+            case 10: responses.q10_occasions = getCheckboxValues('q10'); break;
+            case 11: responses.q11_comparison = getRadioValue('q11'); break;
+            case 12: responses.q12_identity_fit = getRadioValue('q12'); break;
+        }
+    }
+
+    function submitSurvey() {
+        responses.q13_like_most = document.getElementById('q13').value.trim();
+        responses.q14_concerns = document.getElementById('q14').value.trim();
+        responses.q15_change = document.getElementById('q15').value.trim();
+        responses.submitted_at = new Date().toISOString();
+
+        // Tags
+        responses.is_austin_metro = responses.q2_location === 'Austin metro';
+        responses.is_rtd_qualified = responses.q3_qualifies;
+        responses.is_agave_rtd_heavy = (responses.q4_drink_types || []).some(v =>
+            ['RTD canned cocktails', 'Hard seltzers', 'Spirits'].includes(v)
+        );
+
+        // Store in localStorage
+        const allResponses = JSON.parse(localStorage.getItem('pulque_survey_responses') || '[]');
+        allResponses.push(responses);
+        localStorage.setItem('pulque_survey_responses', JSON.stringify(allResponses));
+
+        console.log('Survey response saved:', responses);
+        goToThankYou();
+    }
+
+    function downloadResults() {
+        const allResponses = JSON.parse(localStorage.getItem('pulque_survey_responses') || '[]');
+        if (allResponses.length === 0) {
+            alert('No responses recorded yet.');
+            return;
+        }
+
+        const headers = [
+            'submitted_at', 'q1_age', 'q2_location', 'is_austin_metro',
+            'q3_rtd_frequency', 'is_rtd_qualified', 'q4_drink_types', 'is_agave_rtd_heavy',
+            'q5_pulque_awareness',
+            'q6_appeal', 'q7_uniqueness', 'q8_purchase_intent', 'q9_price',
+            'q10_occasions', 'q11_comparison', 'q12_identity_fit',
+            'q13_like_most', 'q14_concerns', 'q15_change'
+        ];
+
+        const csvRows = [headers.join(',')];
+        allResponses.forEach(r => {
+            const row = headers.map(h => {
+                let val = r[h];
+                if (Array.isArray(val)) val = val.join('; ');
+                if (val === undefined || val === null) val = '';
+                val = String(val).replace(/"/g, '""');
+                return `"${val}"`;
+            });
+            csvRows.push(row.join(','));
+        });
+
+        const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'pulque_survey_responses.csv';
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+</script>
+</body>
+</html>
