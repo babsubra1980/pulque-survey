@@ -526,6 +526,11 @@
 </div>
 
 <script>
+    // ===== GOOGLE SHEETS BACKEND =====
+    // REPLACE the URL below with your Google Apps Script Web App URL
+    // (See instructions in README or comments below)
+    const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzMC4C-awqmLw7vpr3Yud3K4YRefBudqgdGN-DP0HRZIYz6RVEcJvr8DU6t1VnewW2Xng/exec';
+
     const TOTAL_SECTIONS = 14; // 0..13 (sections for questions), plus concept
     let currentSection = 0;
     const responses = {};
@@ -689,7 +694,7 @@
         }
     }
 
-    function submitSurvey() {
+    async function submitSurvey() {
         responses.q13_like_most = document.getElementById('q13').value.trim();
         responses.q14_concerns = document.getElementById('q14').value.trim();
         responses.q15_change = document.getElementById('q15').value.trim();
@@ -702,7 +707,31 @@
             ['RTD canned cocktails', 'Hard seltzers', 'Spirits'].includes(v)
         );
 
-        // Store in localStorage
+        // Convert arrays to strings for Google Sheets
+        const payload = Object.assign({}, responses);
+        if (Array.isArray(payload.q4_drink_types)) payload.q4_drink_types = payload.q4_drink_types.join('; ');
+        if (Array.isArray(payload.q10_occasions)) payload.q10_occasions = payload.q10_occasions.join('; ');
+
+        // Send to Google Sheets
+        if (GOOGLE_SHEETS_URL && GOOGLE_SHEETS_URL !== 'PASTE_YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
+            try {
+                const submitBtn = document.querySelector('#section-13 .btn-next');
+                submitBtn.textContent = 'Submitting...';
+                submitBtn.disabled = true;
+
+                await fetch(GOOGLE_SHEETS_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                console.log('Response sent to Google Sheets');
+            } catch (err) {
+                console.warn('Google Sheets submit failed, saving locally:', err);
+            }
+        }
+
+        // Also store in localStorage as backup
         const allResponses = JSON.parse(localStorage.getItem('pulque_survey_responses') || '[]');
         allResponses.push(responses);
         localStorage.setItem('pulque_survey_responses', JSON.stringify(allResponses));
