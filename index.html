@@ -198,15 +198,110 @@
             font-weight: 700;
             margin-bottom: 16px;
         }
+        /* Hero banner */
+        .hero-banner {
+            width: 100%;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: relative;
+            background: linear-gradient(135deg, #1a0f0a 0%, #3d1f0e 40%, #6b3a1f 100%);
+        }
+        .hero-banner img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+        }
+        .hero-placeholder {
+            height: 220px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #e8c9a8;
+            gap: 8px;
+        }
+        .hero-placeholder .hero-icon {
+            font-size: 3rem;
+            opacity: 0.7;
+        }
+        .hero-placeholder .hero-text {
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        .hero-placeholder .hero-sub {
+            font-size: 0.85rem;
+            opacity: 0.6;
+            font-style: italic;
+        }
+        /* Product image gallery in concept section */
+        .product-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 14px;
+            margin: 20px 0;
+        }
+        .product-card {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-align: center;
+        }
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+        }
+        .product-card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            display: block;
+        }
+        .product-card .card-placeholder {
+            width: 100%;
+            height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+        }
+        .product-card .card-label {
+            padding: 10px 8px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #3d1f0e;
+        }
+        .flavor-original .card-placeholder { background: linear-gradient(135deg, #f5e6d3, #e8d4bc); }
+        .flavor-guava .card-placeholder { background: linear-gradient(135deg, #fce4ec, #f8bbd0); }
+        .flavor-limon .card-placeholder { background: linear-gradient(135deg, #fff9c4, #f0f4c3); }
+        .flavor-pineapple .card-placeholder { background: linear-gradient(135deg, #fff3e0, #ffe0b2); }
         @media (max-width: 600px) {
             .survey-container { padding: 16px 12px 40px; }
             .question-card { padding: 20px 18px; }
             .survey-header h1 { font-size: 1.4rem; }
+            .hero-placeholder { height: 160px; }
+            .product-gallery { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
 <body>
 <div class="survey-container">
+    <!-- Hero Banner - Replace the placeholder div with: <img src="images/hero-banner.jpg" alt="Maya Pulque"> -->
+    <div class="hero-banner">
+        <!-- UNCOMMENT the line below and add your image: -->
+        <img src="/hero-banner.jpg" alt="Maya Pulque RTD Canned Cocktail">
+        <div class="hero-placeholder">
+            <div class="hero-icon">&#127861;</div>
+            <div class="hero-text">Maya Pulque</div>
+            <div class="hero-sub">Authentic Agave RTD Cocktail</div>
+        </div>
+    </div>
     <div class="survey-header">
         <h1>Maya Pulque RTD(Ready-To-Drink) Survey</h1>
         <p>Help us understand your interest in a new canned cocktail. Takes about 3–5 minutes.</p>
@@ -339,6 +434,33 @@
                 <li>Naturally flavored, gluten‑free</li>
                 <li>Sold in 12 oz cans, in 4‑packs</li>
             </ul>
+        </div>
+        <!-- Product Image Gallery -->
+        <div class="question-card" style="padding: 20px;">
+            <h2 style="margin-bottom: 14px; text-align: center;">Our Flavors</h2>
+            <div class="product-gallery">
+                <!-- REPLACE each card-placeholder div with: <img src="images/original.jpg" alt="Original"> -->
+                <div class="product-card flavor-original">
+                    <img src="/original.jpg" alt="Original">
+                    <div class="card-placeholder">&#127866;</div>
+                    <div class="card-label">Original</div>
+                </div>
+                <div class="product-card flavor-guava">
+                    <!-- <img src="images/guava.jpg" alt="Guava"> -->
+                    <div class="card-placeholder">&#127823;</div>
+                    <div class="card-label">Guava</div>
+                </div>
+                <div class="product-card flavor-limon">
+                    <!-- <img src="images/limon.jpg" alt="Limon"> -->
+                    <div class="card-placeholder">&#127819;</div>
+                    <div class="card-label">Lim&oacute;n</div>
+                </div>
+                <div class="product-card flavor-pineapple">
+                    <!-- <img src="images/pineapple-jalapeno.jpg" alt="Pineapple Jalapeno"> -->
+                    <div class="card-placeholder">&#127821;</div>
+                    <div class="card-label">Pineapple-Jalape&ntilde;o</div>
+                </div>
+            </div>
         </div>
         <div class="btn-row">
             <button class="btn btn-back" onclick="prevSection(5)">← Back</button>
@@ -529,7 +651,7 @@
     // ===== GOOGLE SHEETS BACKEND =====
     // REPLACE the URL below with your Google Apps Script Web App URL
     // (See instructions in README or comments below)
-    const GOOGLE_SHEETS_URL = https://script.google.com/macros/s/AKfycbxPWQFEu8xF6PUHOEN4qbLhokYFcJ-OG1MiSEp22J5V1OwsfBxJ-pHDuoYcefxRmrJTYg/exec;
+    const GOOGLE_SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzMC4C-awqmLw7vpr3Yud3K4YRefBudqgdGN-DP0HRZIYz6RVEcJvr8DU6t1VnewW2Xng/exec';
 
     const TOTAL_SECTIONS = 14; // 0..13 (sections for questions), plus concept
     let currentSection = 0;
